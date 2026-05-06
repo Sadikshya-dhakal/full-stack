@@ -1,29 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Finder</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Finder</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <main class="app">
-        <h1>Weather Finder</h1>
-        <p>Search city weather in real time</p>
+  <div class="app">
 
-        <label for="city-input">Enter a city:</label>
-        <input type="text" id="city-input" placeholder="City name">
-        <button id="search-btn" type="button">Search</button>
+    <!-- Search -->
+    <div class="search-row">
+      <input type="text" id="city-input" placeholder="Search city…" autocomplete="off" />
+      <button id="search-btn">🔍</button>
+    </div>
 
-        <p id="status">Enter a city and click search</p>
+    <!-- Loading -->
+    <div id="loading-state" class="state hidden">
+      <p>⏳ Fetching weather…</p>
+    </div>
 
-        <section id="weather-results">
-            <h2 id="city-name">City name</h2>
-            <p id="temp">Temperature:</p>
-            <p id="condition">Condition:</p>
-        </section>
-    </main>
+    <!-- Error -->
+    <div id="error-state" class="state hidden">
+      <p>⚠️ <span id="error-msg">Something went wrong.</span></p>
+      <button id="retry-btn">↺ Try again</button>
+    </div>
 
-    <script src="script.js"></script>
+    <!-- Prompt -->
+    <div id="prompt-state" class="state">
+      <p>🌍 Search a city to see the weather</p>
+    </div>
+
+    <!-- Weather Card -->
+    <div id="weather-card" class="hidden">
+
+      <div class="sky" id="sky-bg">
+        <div class="sky-top">
+          <div>
+            <div class="sky-label">CURRENT WEATHER</div>
+            <div id="city-name" class="sky-city">—</div>
+            <div id="country-name" class="sky-country">—</div>
+          </div>
+          <img id="weather-icon" src="" alt="weather icon" class="wicon" />
+        </div>
+
+        <div class="sky-main">
+          <div class="temp-row">
+            <span id="temp" class="big-temp">—</span>
+            <span class="deg">°C</span>
+          </div>
+          <div>
+            <div id="condition" class="condition">—</div>
+            <div id="feels-like" class="feelslike">—</div>
+          </div>
+        </div>
+
+        <div class="pill-row">
+          <div class="pill">
+            <span class="pill-icon" style="font-size:22px;">💧</span>
+            <span id="humidity" class="pill-val">—</span>
+            <span class="pill-label">Humidity</span>
+          </div>
+          <div class="pill">
+            <span class="pill-icon" style="font-size:22px;">💨</span>
+            <span id="wind" class="pill-val">—</span>
+            <span class="pill-label">Wind</span>
+          </div>
+          <div class="pill">
+            <span class="pill-icon">
+              <img src="visibility.png" alt="visibility" class="cloud-icon" />
+            </span>
+            <span id="visibility" class="pill-val">—</span>
+            <span class="pill-label">Visibility</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-item">
+          <span class="info-label">🌡️ High</span>
+          <span id="temp-max" class="info-val">—</span>
+        </div>
+        <div class="divider"></div>
+        <div class="info-item">
+          <span class="info-label">🧊 Low</span>
+          <span id="temp-min" class="info-val">—</span>
+        </div>
+        <div class="divider"></div>
+        <div class="info-item">
+          <span class="info-label">🔵 Pressure</span>
+          <span id="pressure" class="info-val">—</span>
+        </div>
+        <div class="divider"></div>
+        <div class="info-item">
+          <span class="info-label">🌅 Sunrise</span>
+          <span id="sunrise" class="info-val">—</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

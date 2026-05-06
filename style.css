@@ -1,32 +1,298 @@
+/* ── Reset ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  font-family: system-ui, sans-serif;
-  background: #f1f5f9;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('clouds.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: 'Inter', sans-serif;
+  color: #1a1a2e;
 }
+
+/* ── App Shell ──────────────────────────────── */
 .app {
-  max-width: 540px;
-  margin: 40px auto;
+  width: min(400px, 96vw);
+  animation: fadeUp .4s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Search ─────────────────────────────────── */
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+#city-input {
+  flex: 1;
+  height: 46px;
+  border-radius: 14px;
+  border: 1.5px solid #e2e6ea;
   background: #fff;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 0 16px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
 }
-
-input, button {
-  font: inherit;
-  padding: 10px;
+#city-input::placeholder { color: #aaa; }
+#city-input:focus {
+  border-color: #1a2a4a;
+  box-shadow: 0 0 0 3px rgba(26,42,74,0.10);
 }
-button {
+#search-btn {
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  border: none;
+  background: #1a2a4a;
+  color: #fff;
   cursor: pointer;
-  background: #0f172a;
-  color: white;
-  border: 0;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  transition: background .2s, transform .15s;
+}
+#search-btn:hover { background: #243a60; }
+#search-btn:active { transform: scale(.96); }
+
+/* ── States ─────────────────────────────────── */
+.state {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 20px;
+  padding: 48px 24px;
+  text-align: center;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  animation: fadeUp .3s ease both;
+}
+.state p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 14px;
+}
+.hidden { display: none !important; }
+
+/* Loading spinner */
+.spinner {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 3px solid #e8ecf0;
+  border-top-color: #1a2a4a;
+  animation: spin .8s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error */
+.error-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff5f5;
+  border: 1px solid #fcc;
+  border-left: 3px solid #e24b4a;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #c0392b;
+  text-align: left;
+  max-width: 100%;
+}
+#retry-btn {
+  margin-top: 14px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1.5px solid #e24b4a;
+  background: transparent;
+  color: #c0392b;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+#retry-btn:hover { background: #e24b4a; color: #fff; }
+
+/* Prompt */
+.prompt-icon { font-size: 2.8rem; margin-bottom: 4px; }
+
+/* ── Weather Card ────────────────────────────── */
+#weather-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+  animation: fadeUp .4s ease both;
 }
 
-#status {
-  color: #334155;
+/* Sky / Hero */
+.sky {
+  background: #1a2a4a;
+  padding: 28px 24px 26px;
+  position: relative;
+  overflow: hidden;
 }
-#weather-result {
+/* subtle dot pattern */
+.sky::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.sky-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative; z-index: 1;
+}
+.sky-label {
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 6px;
+}
+.sky-city {
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+.sky-country {
+  font-size: 12px;
+  color: rgba(255,255,255,0.50);
+  margin-top: 3px;
+}
+
+.wicon {
+  width: 72px; height: 72px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  animation: float 3.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+
+.sky-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 18px;
+  position: relative; z-index: 1;
+}
+.temp-row { display: flex; align-items: flex-start; }
+.big-temp {
+  font-size: 72px;
+  font-weight: 300;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+.deg {
+  font-size: 26px;
+  color: rgba(255,255,255,0.6);
   margin-top: 14px;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+}
+.condition {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.90);
+  text-transform: capitalize;
+  text-align: right;
+}
+.feelslike {
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Pills */
+.pill-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  position: relative; z-index: 1;
+}
+.pill {
+  flex: 1;
+  background: rgba(255,255,255,0.09);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 14px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.pill-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.cloud-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.info-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+.pill-val {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+.pill-label {
+  display: block;
+  font-size: 10px;
+  color: rgba(255,255,255,0.42);
+  margin-top: 3px;
+  letter-spacing: 0.04em;
+}
+
+/* Info strip */
+.info-strip {
+  display: flex;
+  background: #fff;
+  padding: 18px 20px;
+}
+.info-item {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.info-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 10px;
+  color: #aaa;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.info-val {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+.divider {
+  width: 1px;
+  background: #eee;
+  margin: 0 4px;
+  align-self: stretch;
 }
